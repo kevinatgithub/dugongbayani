@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_register"
+            android:title="Register" />
+        <item
+            android:id="@+id/nav_queue"
+            android:title="Manage Queue" />
+        <!--<item-->
+            <!--android:id="@+id/nav_agencies"-->
+            <!--android:title="Agencies" />-->
+        <!--<item-->
+            <!--android:id="@+id/nav_awards"-->
+            <!--android:title="Awards" />-->
+        <item
+            android:id="@+id/nav_winners"
+            android:title="Awards" />
+        <item
+            android:id="@+id/nav_logout"
+            android:title="Logout" />
+    </group>
+</menu>

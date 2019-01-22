@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="api_domain">http://test.nbbnets.net/db/public/api</string>
+    <string name="api_login">/login</string>
+    <string name="api_awards">/awards</string>
+    <string name="api_agencies">/agencies</string>
+    <string name="api_winners">/winnerAwards</string>
+    <string name="api_winner_award_by_agency">/winnerAwardByAgency</string>
+    <string name="api_winner_award_register">/winnerAwardRegister</string>
+    <string name="api_winner_award_complete">/winnerAwardComplete</string>
+    <string name="api_queue">/queue</string>
+    <string name="api_manage_queue">/manageQueue</string>
+    <string name="api_complete_next">/completeNext</string>
+    <string name="socket_server">http://122.53.179.106:3000</string>
+</resources>

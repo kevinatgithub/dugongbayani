@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Dugong Bayani</string>
+    <string name="drawer_open">Drawer is Open</string>
+    <string name="drawer_closed">Drawer is Closed</string>
+    <string name="internet_error_title">Can\'t Connect</string>
+    <string name="internet_error">Please check if your device is connected to a network.</string>
+    <string name="api_error">Please contact Administrator</string>
+
+
+</resources>
