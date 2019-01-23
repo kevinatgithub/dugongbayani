@@ -18,7 +18,7 @@ var data = DataSource();
 function getData(){
     return {
         data : _.sortBy(data,['id'],['desc']),
-        last : _.chain(data).filter({completed : true}).sortBy(['id','desc']).first().value(),
+        last : _.chain(data).filter({completed : true}).sortBy(['id','desc']).last().value(),
         nextInLine : _.chain(data).filter(a => {
             return a.recipients != "" && a.recipients != null && a.completed == false;
         }).sortBy(['id'],['desc']).take(10),

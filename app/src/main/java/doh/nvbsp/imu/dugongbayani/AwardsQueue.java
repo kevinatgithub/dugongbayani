@@ -64,22 +64,6 @@ public class AwardsQueue extends AppCompatActivity {
         cv_agency = findViewById(R.id.cv_agency);
         lv_nextinline = findViewById(R.id.lv_nextInLine);
 
-        final Button btn_start = findViewById(R.id.btn_refresh);
-        btn_start.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    mSocket = IO.socket(getResources().getString(R.string.socket_server));
-                } catch (URISyntaxException e) {}
-                mSocket.connect();
-                prepareWebSocketListeners();
-                btn_start.setVisibility(View.INVISIBLE);
-                cv_agency.setVisibility(View.VISIBLE);
-                cv_last.setVisibility(View.VISIBLE);
-                lv_nextinline.setVisibility(View.VISIBLE);
-            }
-        });
-
         gson = new Gson();
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
@@ -170,6 +154,28 @@ public class AwardsQueue extends AppCompatActivity {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.DONUT) {
             tts.speak("Queue changed", TextToSpeech.QUEUE_ADD,null);
+        }
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        try {
+            mSocket = IO.socket(getResources().getString(R.string.socket_server));
+        } catch (URISyntaxException e) {}
+        mSocket.connect();
+        prepareWebSocketListeners();
+        cv_agency.setVisibility(View.VISIBLE);
+        cv_last.setVisibility(View.VISIBLE);
+        lv_nextinline.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(mSocket != null){
+            mSocket.disconnect();
+            mSocket.off("queue");
         }
     }
 }

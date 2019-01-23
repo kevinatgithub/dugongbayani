@@ -36,26 +36,12 @@ public class ManageQueue extends ActivityWithDrawer {
     private com.github.nkzawa.socketio.client.Socket mSocket;
     ArrayList<SocketAward> socketAwards = new ArrayList<>();
     private Emitter.Listener queueEmitListener;
-    Button btn_refresh;
 
     @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.manage_queue_container);
         super.onCreate(savedInstanceState);
-
-        btn_refresh = findViewById(R.id.btn_refresh);
-        btn_refresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    mSocket = IO.socket(getResources().getString(R.string.socket_server));
-                } catch (URISyntaxException e) {}
-                prepareWebSocketListeners();
-                mSocket.connect();
-                btn_refresh.setVisibility(View.INVISIBLE);
-            }
-        });
 
         gson = new Gson();
         session = new Session(this);
@@ -94,7 +80,6 @@ public class ManageQueue extends ActivityWithDrawer {
                         }
                         ManageQueueAdapter manageQueueAdapter = new ManageQueueAdapter(getApplicationContext(),qualified);
                         lv_queue.setAdapter(manageQueueAdapter);
-                        Toast.makeText(ManageQueue.this, "List Refreshed", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -127,9 +112,21 @@ public class ManageQueue extends ActivityWithDrawer {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mSocket.disconnect();
-        mSocket.off("queue");
+    protected void onPostResume() {
+        super.onPostResume();
+        try {
+            mSocket = IO.socket(getResources().getString(R.string.socket_server));
+        } catch (URISyntaxException e) {}
+        prepareWebSocketListeners();
+        mSocket.connect();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(mSocket != null){
+            mSocket.disconnect();
+            mSocket.off("queue");
+        }
     }
 }

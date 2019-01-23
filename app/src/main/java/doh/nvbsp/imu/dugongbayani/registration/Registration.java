@@ -64,22 +64,6 @@ public class Registration extends ActivityWithDrawer {
         super.onCreate(savedInstanceState);
 
         cv_agency = findViewById(R.id.cv_agency);
-        final Button btn_refresh = findViewById(R.id.btn_refresh);
-        btn_refresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    mSocket = IO.socket(getResources().getString(R.string.socket_server));
-                } catch (URISyntaxException e) {}
-                mSocket.connect();
-                prepareWebSocketListeners();
-                btn_refresh.setVisibility(View.INVISIBLE);
-                cv_agency.setVisibility(View.VISIBLE);
-            }
-        });
-
-
-
         gson = new Gson();
 
         spinner_agency = findViewById(R.id.spinner_agency);
@@ -121,9 +105,6 @@ public class Registration extends ActivityWithDrawer {
                     }
                     applyFieldValues(award);
                     base64converted = null;
-                }else{
-//                    cv_award_details.setVisibility(View.INVISIBLE);
-//                    ll_loading.setVisibility(View.GONE);
                 }
             }
 
@@ -135,16 +116,36 @@ public class Registration extends ActivityWithDrawer {
 
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mSocket.off();
-        mSocket.disconnect();
-        mSocket.off("queue",queueEmitListener);
+    private void listenToWebSocket() {
+        try {
+            mSocket = IO.socket(getResources().getString(R.string.socket_server));
+        } catch (URISyntaxException e) {}
+        if(mSocket.hasListeners("queue")){
+            mSocket.disconnect();
+            mSocket.off("queue");
+        }
+        prepareWebSocketListeners();
+        mSocket.connect();
+        cv_agency.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        listenToWebSocket();
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(mSocket != null){
+            mSocket.off();
+            mSocket.disconnect();
+            mSocket.off("queue",queueEmitListener);
+        }
+    }
 
+    private boolean agencyLoaded = false;
     private void prepareWebSocketListeners() {
         queueEmitListener = new Emitter.Listener() {
             @Override
@@ -156,8 +157,10 @@ public class Registration extends ActivityWithDrawer {
                         Gson gson = new Gson();
                         SocketQueue apiResponse = gson.fromJson(data.toString(),SocketQueue.class);
                         socketAwards = apiResponse.getData();
-                        applyAgencies(apiResponse.getData());
-                        Toast.makeText(Registration.this, "Agency Loaded", Toast.LENGTH_SHORT).show();
+                        if(!agencyLoaded){
+                            applyAgencies(apiResponse.getData());
+                            agencyLoaded = true;
+                        }
                     }
                 });
             }

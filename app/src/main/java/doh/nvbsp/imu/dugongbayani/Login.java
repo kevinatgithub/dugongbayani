@@ -73,6 +73,16 @@ public class Login extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        Button btn_settings = findViewById(R.id.btn_settings);
+        btn_settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(),Settings.class);
+                startActivity(i);
+                finish();
+            }
+        });
     }
 
     private void performLogin() {
