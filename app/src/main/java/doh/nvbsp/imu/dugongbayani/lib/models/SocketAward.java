@@ -1,31 +1,35 @@
 package doh.nvbsp.imu.dugongbayani.lib.models;
 
 public class SocketAward {
-    private String id;
+    private int id;
     private String agency;
-    private String seats;
+    private int seats;
     private String tableAssignment;
+    private int donations;
     private String award;
+    private String extraAward;
     private String recipients;
     private String photo;
     private boolean completed;
 
-    public SocketAward(String id, String agency, String seats, String tableAssignment, String award, String recipients, String photo, boolean completed) {
+    public SocketAward(int id, String agency, int seats, String tableAssignment, int donations, String award, String extraAward, String recipients, String photo, boolean completed) {
         this.id = id;
         this.agency = agency;
         this.seats = seats;
         this.tableAssignment = tableAssignment;
+        this.donations = donations;
         this.award = award;
+        this.extraAward = extraAward;
         this.recipients = recipients;
         this.photo = photo;
         this.completed = completed;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -37,11 +41,11 @@ public class SocketAward {
         this.agency = agency;
     }
 
-    public String getSeats() {
+    public int getSeats() {
         return seats;
     }
 
-    public void setSeats(String seats) {
+    public void setSeats(int seats) {
         this.seats = seats;
     }
 
@@ -53,12 +57,28 @@ public class SocketAward {
         this.tableAssignment = tableAssignment;
     }
 
+    public int getDonations() {
+        return donations;
+    }
+
+    public void setDonations(int donations) {
+        this.donations = donations;
+    }
+
     public String getAward() {
         return award;
     }
 
     public void setAward(String award) {
         this.award = award;
+    }
+
+    public String getExtraAward() {
+        return extraAward;
+    }
+
+    public void setExtraAward(String extraAward) {
+        this.extraAward = extraAward;
     }
 
     public String getRecipients() {

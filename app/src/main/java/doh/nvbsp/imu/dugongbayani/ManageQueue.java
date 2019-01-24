@@ -115,7 +115,7 @@ public class ManageQueue extends ActivityWithDrawer {
     protected void onPostResume() {
         super.onPostResume();
         try {
-            mSocket = IO.socket(getResources().getString(R.string.socket_server));
+            mSocket = IO.socket(session.getSocketServer(getResources().getString(R.string.socket_server)));
         } catch (URISyntaxException e) {}
         prepareWebSocketListeners();
         mSocket.connect();

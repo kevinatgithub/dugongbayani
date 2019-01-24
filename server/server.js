@@ -16,12 +16,19 @@ var DataSource = require('./ds');
 var data = DataSource();
 
 function getData(){
+    let dataNil = _.chain(data).filter(a => {
+        return a.recipients != "" && a.recipients != null && a.completed == false;
+    }).sortBy(function (obj) {
+        return parseInt(obj.id);
+    });
+
+
     return {
-        data : _.sortBy(data,['id'],['desc']),
+        data : _.sortBy(data, function (obj) {
+            return parseInt(obj.id);
+        }),
         last : _.chain(data).filter({completed : true}).sortBy(['id','desc']).last().value(),
-        nextInLine : _.chain(data).filter(a => {
-            return a.recipients != "" && a.recipients != null && a.completed == false;
-        }).sortBy(['id'],['desc']).take(10),
+        nextInLine : dataNil,
     };
 }
 
@@ -37,6 +44,9 @@ io.on('connection', function(socket) {
                 a.photo = photo;
             }
         })
+        // fs.writeFileSync('./backup.js',  util.inspect(data) , 'utf-8');
+
+        fs.writeFileSync('./backup.js',  JSON.stringify(data) , 'utf-8');
         io.sockets.emit('queue',getData());
 
     });
@@ -47,7 +57,26 @@ io.on('connection', function(socket) {
             return a.recipients != "" && a.recipients != null && a.completed == false;
         }).sortBy(['id','desc']).first().value();
         award.completed = true;
+        fs.writeFileSync('./backup.js',  JSON.stringify(award) , 'utf-8');
         io.sockets.emit('queue',getData());
+    });
+
+    socket.on('update',({id,award}) => {
+        if(id){
+            let o = _.find(data,{id:id});
+            o.agency = award.agency;
+            o.award = award.award;
+            o.seats = award.seats;
+            o.tableAssignment = award.tableAssignment;
+            o.recipients = award.recipients;
+            o.completed = award.completed;
+            io.sockets.emit('queue',getData());
+            fs.writeFileSync('./backup.js',  JSON.stringify(data) , 'utf-8');
+        }
+    })
+
+    socket.on('backup', function(){
+        fs.writeFileSync('./backup.js',  JSON.stringify(data) , 'utf-8');
     });
 
 });

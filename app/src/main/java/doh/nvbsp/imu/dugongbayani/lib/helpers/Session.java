@@ -51,7 +51,7 @@ public class Session {
     }
 
     public void setSocketServer(String socketServer){
-        prefs.edit().putString("socketserver",socketServer).commit();
+        prefs.edit().putString("socketServer",socketServer).commit();
     }
 
     public String getSocketServer(String defValue){

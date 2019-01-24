@@ -32,6 +32,7 @@ import doh.nvbsp.imu.dugongbayani.lib.JsonResponse.SocketQueue;
 import doh.nvbsp.imu.dugongbayani.lib.adapters.AwardsQueueAdapter;
 import doh.nvbsp.imu.dugongbayani.lib.helpers.ApiCalls;
 import doh.nvbsp.imu.dugongbayani.lib.helpers.CallbackWithResponse;
+import doh.nvbsp.imu.dugongbayani.lib.helpers.Session;
 import doh.nvbsp.imu.dugongbayani.lib.models.SocketAward;
 import doh.nvbsp.imu.dugongbayani.lib.models.WinnerAward;
 import doh.nvbsp.imu.dugongbayani.registration.Registration;
@@ -43,11 +44,13 @@ public class AwardsQueue extends AppCompatActivity {
 
     TextView lbl_current_agency_name;
     TextView lbl_current_award;
+    TextView lbl_current_extraAward;
     ImageView img_current_photo;
     TextView lbl_current_recipients;
 
     ListView lv_nextinline;
     private Gson gson;
+    private Session session;
     Vibrator vibrator;
     TextToSpeech tts;
     private com.github.nkzawa.socketio.client.Socket mSocket;
@@ -65,20 +68,14 @@ public class AwardsQueue extends AppCompatActivity {
         lv_nextinline = findViewById(R.id.lv_nextInLine);
 
         gson = new Gson();
+        session = new Session(this);
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int i) {
-
-            }
-        });
-        tts.setLanguage(Locale.US);
-        tts.setSpeechRate(2f);
 
         lbl_prev_agency_name = findViewById(R.id.lbl_prev_agency_name);
         lbl_prev_award = findViewById(R.id.lbl_prev_award);
         lbl_current_agency_name = findViewById(R.id.lbl_current_agency_name);
         lbl_current_award = findViewById(R.id.lbl_current_award);
+        lbl_current_extraAward = findViewById(R.id.lbl_extraAward);
         img_current_photo = findViewById(R.id.img_current_photo);
         lbl_current_recipients = findViewById(R.id.lbl_current_recipients);
 
@@ -121,6 +118,7 @@ public class AwardsQueue extends AppCompatActivity {
                 }
                 lbl_current_agency_name.setText(current.getAgency());
                 lbl_current_award.setText(current.getAward());
+                lbl_current_extraAward.setText(current.getExtraAward());
                 if(current.getPhoto() != null){
                     String base64Image = current.getPhoto();
                     byte[] decodedString = Base64.decode(base64Image, Base64.DEFAULT);
@@ -141,7 +139,7 @@ public class AwardsQueue extends AppCompatActivity {
         }
     }
 
-    private String currentId = null;
+    private int currentId = 0;
 
     private void notifyUserOfChange() {
         // Vibrate for 500 milliseconds
@@ -151,17 +149,13 @@ public class AwardsQueue extends AppCompatActivity {
             //deprecated in API 26
             vibrator.vibrate(500);
         }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.DONUT) {
-            tts.speak("Queue changed", TextToSpeech.QUEUE_ADD,null);
-        }
     }
 
     @Override
     protected void onPostResume() {
         super.onPostResume();
         try {
-            mSocket = IO.socket(getResources().getString(R.string.socket_server));
+            mSocket = IO.socket(session.getSocketServer(getResources().getString(R.string.socket_server)));
         } catch (URISyntaxException e) {}
         mSocket.connect();
         prepareWebSocketListeners();

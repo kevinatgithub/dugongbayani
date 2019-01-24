@@ -55,10 +55,10 @@ public class ActivityWithDrawer extends AppCompatActivity {
 
         provideDrawerOnClickListeners();
         if(!session.getUser().getRole().toUpperCase().equals("ORGANIZER")){
-            NavigationView navigationView = (NavigationView) findViewById(R.id.nv_drawer);
-            Menu navMenu = navigationView.getMenu();
+//            NavigationView navigationView = (NavigationView) findViewById(R.id.nv_drawer);
+//            Menu navMenu = navigationView.getMenu();
 //            navMenu.getItem(0).getSubMenu().getItem(2).setVisible(false);
-            navMenu.getItem(2).setVisible(false);
+//            navMenu.getItem(2).setVisible(false);
         }
     }
 
@@ -85,11 +85,6 @@ public class ActivityWithDrawer extends AppCompatActivity {
                     case R.id.nav_queue:
                         Intent intent3 = new Intent(getApplicationContext(),ManageQueue.class);
                         startActivity(intent3);
-                        finish();
-                        break;
-                    case R.id.nav_winners:
-                        Intent intent2 = new Intent(getApplicationContext(),Winners.class);
-                        startActivity(intent2);
                         finish();
                         break;
                     case R.id.nav_logout:

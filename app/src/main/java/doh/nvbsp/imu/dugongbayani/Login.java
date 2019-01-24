@@ -89,22 +89,24 @@ public class Login extends AppCompatActivity {
         String username = txt_username.getText().toString();
         String password = txt_password.getText().toString();
 
-        ApiCalls.login(this, username, password, new CallbackWithResponse() {
-            @Override
-            public void execute(JSONObject response) {
-                LoginResponse res = gson.fromJson(response.toString(),LoginResponse.class);
-                if(res.data == null){
-                    tl_username.setError("Username is not registered");
-                    Toast.makeText(Login.this, "Login failed! Check Username/Password", Toast.LENGTH_SHORT).show();
-                }else{
-                    session.setUser(res.data);
-                    Toast.makeText(Login.this, "Welcome " + res.data.getName(), Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getApplicationContext(),Registration.class);
-                    startActivity(intent);
-                    finish();
-                }
-            }
-        });
+        if(username.equals("mj") && password.equals("mj")){
+            User user = new User("mj","Dugong Bayani Usher","mj","mj","Usher");
+            session.setUser(user);
+            Toast.makeText(Login.this, "Welcome " + user.getName(), Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getApplicationContext(),Registration.class);
+            startActivity(intent);
+            finish();
+        }else if(username.equals("doc") && password.equals("doc")){
+            User user = new User("mj","Dugong Bayani Organizer","mj","mj","Organizer");
+            session.setUser(user);
+            Toast.makeText(Login.this, "Welcome " + user.getName(), Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getApplicationContext(),Registration.class);
+            startActivity(intent);
+            finish();
+        }else{
+            tl_username.setError("Username is not registered");
+            Toast.makeText(Login.this, "Login failed! Check Username/Password", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private class LoginResponse{

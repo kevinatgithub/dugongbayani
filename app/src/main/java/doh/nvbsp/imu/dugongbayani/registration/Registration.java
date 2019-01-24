@@ -36,6 +36,7 @@ import java.util.List;
 import doh.nvbsp.imu.dugongbayani.ActivityWithDrawer;
 import doh.nvbsp.imu.dugongbayani.R;
 import doh.nvbsp.imu.dugongbayani.lib.JsonResponse.SocketQueue;
+import doh.nvbsp.imu.dugongbayani.lib.helpers.Session;
 import doh.nvbsp.imu.dugongbayani.lib.models.SocketAward;
 
 public class Registration extends ActivityWithDrawer {
@@ -49,6 +50,7 @@ public class Registration extends ActivityWithDrawer {
     TextView lbl_seats;
     TextView lbl_table;
     TextView lbl_award;
+    TextView lbl_extraAward;
     EditText txt_recipient;
     ImageView img_photo;
     private String base64converted;
@@ -57,6 +59,7 @@ public class Registration extends ActivityWithDrawer {
     private ArrayList<SocketAward> socketAwards = new ArrayList<>();
     private com.github.nkzawa.socketio.client.Socket mSocket;
     Emitter.Listener queueEmitListener;
+    private Session session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +68,7 @@ public class Registration extends ActivityWithDrawer {
 
         cv_agency = findViewById(R.id.cv_agency);
         gson = new Gson();
+        session = new Session(this);
 
         spinner_agency = findViewById(R.id.spinner_agency);
         cv_award_details = findViewById(R.id.cv_award_details);
@@ -74,6 +78,7 @@ public class Registration extends ActivityWithDrawer {
         lbl_seats = findViewById(R.id.lbl_recipients);
         lbl_table = findViewById(R.id.lbl_table);
         lbl_award = findViewById(R.id.lbl_current_award);
+        lbl_extraAward = findViewById(R.id.lbl_current_extraAward);
         txt_recipient = findViewById(R.id.txt_recipient);
         img_photo = findViewById(R.id.img_photo);
         img_photo.setOnClickListener(new View.OnClickListener() {
@@ -97,7 +102,7 @@ public class Registration extends ActivityWithDrawer {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String value = (String) spinner_agency.getItemAtPosition(position);
                 if(value.length() > 0){
-                    SocketAward award = new SocketAward(null,null,null,null,null,null,null,false);
+                    SocketAward award = new SocketAward(0,null,0,null,0,null, null,null,null,false);
                     for(SocketAward a: socketAwards){
                         if(a.getAgency().equals(value)){
                             award = a;
@@ -118,7 +123,7 @@ public class Registration extends ActivityWithDrawer {
 
     private void listenToWebSocket() {
         try {
-            mSocket = IO.socket(getResources().getString(R.string.socket_server));
+            mSocket = IO.socket(session.getSocketServer(getResources().getString(R.string.socket_server)));
         } catch (URISyntaxException e) {}
         if(mSocket.hasListeners("queue")){
             mSocket.disconnect();
@@ -177,6 +182,7 @@ public class Registration extends ActivityWithDrawer {
         lbl_seats.setText(socketAward.getSeats() + " seats alloted");
         lbl_table.setText("Table No. " +socketAward.getTableAssignment());
         lbl_award.setText(socketAward.getAward());
+        lbl_extraAward.setText(socketAward.getExtraAward());
         txt_recipient.setText(socketAward.getRecipients());
         if(socketAward.getPhoto() != null){
             String base64Image = socketAward.getPhoto();

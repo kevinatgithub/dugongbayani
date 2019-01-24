@@ -13,9 +13,9 @@
         <!--<item-->
             <!--android:id="@+id/nav_awards"-->
             <!--android:title="Awards" />-->
-        <item
-            android:id="@+id/nav_winners"
-            android:title="Awards" />
+        <!--<item-->
+            <!--android:id="@+id/nav_winners"-->
+            <!--android:title="Awards" />-->
         <item
             android:id="@+id/nav_logout"
             android:title="Logout" />
